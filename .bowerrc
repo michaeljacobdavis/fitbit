@@ -1,4 +1,4 @@
 {
-  "directory" : "./app/components",
-  "json"      : "./app/component.json"
+  "directory" : "./public/components",
+  "json"      : "./public/component.json"
 }

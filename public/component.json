@@ -1,0 +1,7 @@
+{
+  "name": "fitbit",
+  "version": "0.0.0",
+  "dependencies": {
+    "d3": "~3.2.8"
+  }
+}

@@ -3,5 +3,9 @@ html
   head
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
+    block styles
   body
     block content
+
+    script(src='components/d3/d3.js')
+    block scripts

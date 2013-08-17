@@ -1,0 +1,10 @@
+extends layout
+ 
+block content
+  h1 Hello charts
+ 
+block scripts
+  script
+    d3.json('/api/user/-/activities/steps/date/today/1m.json', function(error, json){
+      debugger;
+    });

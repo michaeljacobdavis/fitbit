@@ -1,8 +1,16 @@
+exports.index = function(fitbitClient){
+  return function(req, res){
+    fitbit.getAccessToken(req, res, function(error, newToken){
+      if(newToken){
+        req.session.token = newToken;
+        res.redirect('/charts');
+      }
+    });
+  };
+};
 
-/*
- * GET home page.
- */
 
-exports.index = function(req, res){
-  res.render('index', { title: 'Express' });
+exports.charts = function(req, res){
+  if(!req.session.token) res.redirect('/');
+  res.render('charts');
 };
