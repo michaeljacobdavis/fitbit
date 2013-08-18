@@ -1,6 +1,6 @@
 exports.index = function(fitbitClient){
   return function(req, res){
-    fitbit.getAccessToken(req, res, function(error, newToken){
+    fitbitClient.getAccessToken(req, res, function(error, newToken){
       if(newToken){
         req.session.token = newToken;
         res.redirect('/charts');

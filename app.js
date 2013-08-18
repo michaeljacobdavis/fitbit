@@ -5,6 +5,7 @@
 
 var express = require('express'),
   routes = require('./routes'),
+  api = require('./routes/api'),
   http = require('http'),
   path = require('path'),
   fitbit;
@@ -18,14 +19,14 @@ app.set('view engine', 'jade');
 app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.bodyParser());
+app.use(express.cookieParser());
+app.use(express.session({secret: 'blah'}));
 app.use(express.methodOverride());
-  app.use(express.cookieParser(process.env.cookieKey));
-  app.use(express.session());
 app.use(app.router);
   app.use(require('stylus').middleware(__dirname + '/public'));
 app.use(express.static(path.join(__dirname, 'public')));
 
-fitbit = require('fitbit-js')(process.env.fitbitApikey, process.env.fitbitApiSecret,
+fitbit = require('fitbit-js')(process.env.FITBIT_API_KEY, process.env.FITBIT_API_SECRET,
     'http://localhost:' + app.get('port'));
 
 // development only
@@ -34,8 +35,9 @@ if ('development' == app.get('env')) {
 }
 
 
-app.get('/', routes.index);
-app.get('/api/*', routes.api(fitbit));
+app.get('/', routes.index(fitbit));
+app.get('/charts', routes.charts);
+app.get('/api/*', api.api(fitbit));
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
