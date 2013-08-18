@@ -5,6 +5,56 @@ block content
  
 block scripts
   script
-    d3.json('/api/user/-/activities/steps/date/today/1m.json', function(error, json){
-      debugger;
+    var margin = { top:30, right:20, bottom: 70, left: 50 },
+      width = 500 - margin.left - margin.right,
+      height = 400 - margin.top - margin.bottom,
+
+      parseTime = d3.time.format('%H:%M:%S').parse,
+
+      x = d3.time.scale().range([0, width]),
+      y = d3.scale.linear().range([height, 0]),
+
+      xAxis = d3.svg.axis()
+        .scale(x)
+        .orient('bottom')
+        .ticks(5),
+      yAxis = d3.svg.axis()
+        .scale(y)
+        .orient('left')
+        .ticks('5'),
+
+     svg = d3.select('body')
+        .append('svg')
+          .attr('width', width + margin.left + margin.right)
+          .attr('height', height + margin.top + margin.bottom)
+        .append('g')
+          .attr('transform', 'translate(' + margin.left + ',' + margin.top);
+
+    d3.json('/api/user/-/activities/steps/date/today/1d/15min.json', function(error, json){
+      var data = json['activities-steps-intraday'].dataset;
+
+      data.forEach(function(d){
+        d.time = parseTime(d.time);
+      });
+
+      x.domain(d3.extent(data, function(d){ return d.time; }));
+      y.domain(d3.extent(data, function(d){ return d.value; }));
+
+      var line = d3.svg.line()
+        .x(function(d){ return x(d.time); })
+        .y(function(d){ return y(d.value); });
+
+      svg.append('path')
+        .datum(data)
+        .attr('class', 'line')
+        .attr('d', line);
+
+      svg.append('g')
+        .attr('class', 'x axis')
+        .attr('transform', 'translate(0,' + height + ')')
+        .call(xAxis);
+
+      svg.append('g')
+        .attr('class', 'y axis')
+        .call(yAxis);
     });
